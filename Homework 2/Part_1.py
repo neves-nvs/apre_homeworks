@@ -2,6 +2,7 @@ import pandas as pd
 from pandas import DataFrame
 import numpy as np
 from sklearn.metrics import mean_squared_error as RMSE
+from sklearn.feature_selection import mutual_info_classif
 
 input_train = {
     "y1": [1, 1, 0, 1, 2, 1, 2, 0],
@@ -102,3 +103,28 @@ for i in range(2):
 rmse = RMSE(test_true, test_pred, squared=False)
 
 print("\nThe RMSE is ", rmse)
+
+
+bin_out=list()
+for el in input_train["output"]:
+    if el >= 4:
+        bin_out.append(1)
+    else:
+        bin_out.append(0)
+
+bin_y3=[0,1,1,0,1,0,0,1]
+
+#input_y1 = np.reshape([input_train["y1"],input_train["y2"],input_train["y3"]],(8,3))
+
+#input = [input_train["y1"],input_train["y2"],input_train["y3"]]
+input=list()
+for i in range(0,8):
+    i1,i2,i3 = input_train["y1"][i], input_train["y2"][i], bin_y3[i] 
+    input.append([i1,i2,i3])
+
+print(input,bin_out)
+igy1 = mutual_info_classif(np.array(input),bin_out,discrete_features=True)
+print("\nIG={}".format(igy1))
+
+igy10 = mutual_info_classif(np.array([[0,2,0],[0,2,1]]),[0,1],discrete_features=True)
+print("\nIGY10={}".format(igy10))
