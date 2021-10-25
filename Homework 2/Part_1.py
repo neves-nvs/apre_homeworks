@@ -126,5 +126,5 @@ print(input,bin_out)
 igy1 = mutual_info_classif(np.array(input),bin_out,discrete_features=True)
 print("\nIG={}".format(igy1))
 
-igy10 = mutual_info_classif(np.array([[0,2,0],[0,2,1]]),[0,1],discrete_features=True)
+igy10 = mutual_info_classif(np.array([[0,2,1],[0,2,1]]),[0,1],discrete_features=True)
 print("\nIGY10={}".format(igy10))
