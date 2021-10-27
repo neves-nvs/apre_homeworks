@@ -1,5 +1,6 @@
 
 import pandas as pd
+
 import matplotlib.pyplot as plt
 
 from scipy.io import arff
@@ -40,9 +41,11 @@ def q5_1():
         train_accuracy_list.append(sum(accuracy["train_score"])/len(accuracy["train_score"]))
         test_accuracy_list.append(sum(accuracy["test_score"])/len(accuracy["test_score"]))
 
-    plt.plot([1,3,5,9], train_accuracy_list)
-    plt.plot([1,3,5,9], test_accuracy_list)
-    plt.show()
+    # plt.plot([1,3,5,9], train_accuracy_list)
+    # plt.plot([1,3,5,9], test_accuracy_list)
+    plt.plot(range(4), train_accuracy_list,label="Limited Features [Train]", marker="o", linestyle="--")
+    plt.plot(range(4), test_accuracy_list,label="Limited Features [Test]", marker="o", linestyle="--")
+    # plt.show()
     
 
 def q5_2():
@@ -58,10 +61,21 @@ def q5_2():
         train_accuracy_list.append(sum(accuracy["train_score"])/len(accuracy["train_score"]))
         test_accuracy_list.append(sum(accuracy["test_score"])/len(accuracy["test_score"]))
 
-    plt.plot([1,3,5,9], train_accuracy_list)
-    plt.plot([1,3,5,9], test_accuracy_list)
-    plt.show()
 
+    plt.plot(range(4), train_accuracy_list,label="Limited Depth [Train]", marker="v", linestyle="--")
+    plt.plot(range(4), test_accuracy_list,label="Limited Depth [Test]", marker="v", linestyle="--")
+    # plt.plot([1,3,5,9], train_accuracy_list)
+    # plt.plot([1,3,5,9], test_accuracy_list)
+    # plt.show()
 
 q5_1()
 q5_2()
+
+# Adjust some settings
+plt.xticks(range(4), [1, 3, 5, 9])
+plt.xlabel('● - Number Selected Features | ▼ - Tree depth')
+plt.ylabel('Mean Accuracy')
+plt.title('Mean Accuracy vs (Number of Features|Tree Depth)')
+plt.legend()
+plt.savefig("graph.png", bbox_inches='tight')
+plt.show()
