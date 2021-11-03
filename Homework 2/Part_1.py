@@ -53,7 +53,12 @@ for output in input_train["output"]:
 test_outputs = np.matrix(test_temp)
 
 phi_transposed = phi.transpose()
-phi_pinv = np.linalg.pinv(phi)
+# phi_pinv = np.linalg.pinv(phi)
+phi_pinv = np.matmul(phi.transpose(), phi)
+phi_pinv = np.linalg.inv(phi_pinv)
+phi_pinv = np.matmul(phi_pinv, phi_transposed)
+
+
 weights = phi_pinv * test_outputs
 
 weights_list = [weight[0] for weight in weights.tolist()]
