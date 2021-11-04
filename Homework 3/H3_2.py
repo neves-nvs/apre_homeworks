@@ -52,12 +52,16 @@ def quest3():
 
     k_splits = KFold(n_splits=5, random_state=GROUPN, shuffle=True)
 
-    clf = MLPRegressor(random_state=GROUPN)
+    clf = MLPRegressor(alpha=0.1, random_state=GROUPN)
     Y_pred = cross_val_predict(clf, X, Y, cv=k_splits)
-    
     residuals = np.subtract(Y, Y_pred)
-    plt.scatter(Y_pred, residuals)
+    
+    clf_reg = MLPRegressor(alpha=0, random_state=GROUPN)
+    Y_reg_pred = cross_val_predict(clf_reg, X, Y, cv=k_splits)
+    residuals_reg = np.subtract(Y, Y_reg_pred)
+    
+    plt.boxplot([residuals, residuals_reg])
     plt.savefig("graph_ex3")
 
-#quest2()
+quest2()
 quest3()
