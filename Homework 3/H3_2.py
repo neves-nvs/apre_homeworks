@@ -1,25 +1,22 @@
 
 import pandas as pd
 
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import numpy as np
 
 from scipy.io import arff
 
 from sklearn.neural_network import MLPClassifier
-
-from sklearn.datasets import make_classification
+from sklearn.neural_network import MLPRegressor
 
 from sklearn.model_selection import KFold
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import StratifiedKFold
+
+from sklearn.model_selection import cross_val_predict
 
 from sklearn.metrics import confusion_matrix
 
-# LEARNING_RATE = 0.001
-GROUPN = 95
-
-knn = KFold(n_splits=5, random_state=GROUPN, shuffle=True)
-
+GROUPN = 0
 
 def quest2():
     # Extract Data
@@ -28,19 +25,21 @@ def quest2():
     X = D_breast.drop(columns=D_breast.columns[-1]).to_numpy().astype(int)
     # Results array binarized
     Y = D_breast[D_breast.columns[-1]].replace(b'benign', 0).replace(b'malignant', 1)
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, random_state=GROUPN)
 
-    clf = MLPClassifier(random_state=GROUPN)
-    clf.fit(X_train, Y_train)
+    stratifiedk_splits = StratifiedKFold(n_splits=5, random_state=GROUPN, shuffle=True)
 
-    Y_test_predict = clf.predict(X_test)
-
-    conf_matrix = confusion_matrix(Y_test, Y_test_predict)
+    clf = MLPClassifier(hidden_layer_sizes=(3, 2), random_state=GROUPN)
+    Y_pred = cross_val_predict(clf, X, Y, cv=stratifiedk_splits)
+    conf_matrix = confusion_matrix(Y, Y_pred)
     
-    print(Y_test_predict)
+    clf_es = MLPClassifier(hidden_layer_sizes=(3, 2), random_state=GROUPN, early_stopping=True)
+    Y_es_pred = cross_val_predict(clf_es, X, Y, cv=stratifiedk_splits)
+    conf_matrix_es = confusion_matrix(Y, Y_es_pred)
+
+    print("Confusion matrix")
     print(conf_matrix)
-
-
+    print("Confusion matrix - Early Stopping")
+    print(conf_matrix_es)
 
 
 def quest3():
@@ -48,20 +47,17 @@ def quest3():
     D_kin = pd.DataFrame( arff.loadarff( "kin8nm.arff" )[0] )
     # Elements array
     X = D_kin.drop(columns=D_kin.columns[-1]).to_numpy()
-    # Results array binarized
+
     Y = D_kin[D_kin.columns[-1]].to_numpy()
 
-    print(Y)
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, random_state=GROUPN)
+    k_splits = KFold(n_splits=5, random_state=GROUPN, shuffle=True)
 
-    clf = MLPClassifier(random_state=GROUPN)
-    clf.fit(X_train, Y_train)
+    clf = MLPRegressor(random_state=GROUPN)
+    Y_pred = cross_val_predict(clf, X, Y, cv=k_splits)
+    
+    residuals = np.subtract(Y, Y_pred)
+    plt.scatter(Y_pred, residuals)
+    plt.savefig("graph_ex3")
 
-    # Y_test_predict = clf.predict(X_test)
-
-    # residuals = np.subtract(Y_test, Y_test_predict)
-    # print(residuals, Y_test_predict)
-    # plt.scatter(residuals, Y_test_predict)
-
-# quest2()
+#quest2()
 quest3()
