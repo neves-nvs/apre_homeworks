@@ -60,7 +60,7 @@ def quest3():
     Y_reg_pred = cross_val_predict(clf_reg, X, Y, cv=k_splits)
     residuals_reg = np.subtract(Y, Y_reg_pred)
     
-    plt.boxplot([residuals, residuals_reg])
+    plt.boxplot([residuals, residuals_reg], labels=("Not Regularized", "Regularized"))
     plt.savefig("graph_ex3")
 
 quest2()
