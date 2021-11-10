@@ -7,12 +7,12 @@ import numpy as np
 from scipy.io import arff
 
 from sklearn.cluster import KMeans
-
 from sklearn.metrics import silhouette_score
-
 from sklearn.feature_selection import mutual_info_classif
-
 from sklearn.feature_selection import SelectKBest
+
+import pprint
+
 
 SEED = 95
 
@@ -23,11 +23,11 @@ X = D_breast.drop(columns=D_breast.columns[-1]).to_numpy().astype(int)
 # Results array binarized
 Y = D_breast[D_breast.columns[-1]].replace(b'benign', 0).replace(b'malignant', 1)
 
-def quest4():
+def Cluster(k, Y_pred):
+    cluster = np.where(Y_pred == k) [0]
+    return cluster
 
-    def Cluster(k, Y_pred):
-        cluster = np.where(Y_pred == k) [0]
-        return cluster
+def quest4():
 
     def ECR(k, Y, Y_pred):
         soma = 0
@@ -58,21 +58,38 @@ def quest4():
         sil_score = silhouette_score(X, Y_pred, random_state=SEED)
         print(f"silhouette = {sil_score}")
 
+# def 
+
 def quest5():
     kmeans = KMeans(n_clusters=3, random_state=SEED)
     kmeans = kmeans.fit(X)
     Y_pred = kmeans.predict(X)
 
-    best_feat = SelectKBest(mutual_info_classif, k=2).fit_transform(X, Y)
-    print(best_feat)
+    # Extract the cluster as separate arrays
+    cluster = list()
+    for i in range(3):
+        cluster.append(Cluster(i, Y_pred))
+    
+    # Get elements with only their 2 most meaningful features
+    Kbest = SelectKBest(mutual_info_classif, k=2)
+    Kbest =Kbest.fit_transform(X, Y)
 
-    # pprint(dir(best_feat))
-    # print(best_feat)
 
-    # for feature in range(2):
-    #     plt.scatter(feature, Y2_pred)
+    axis_split = [  [],
+                    [],
+                    []  ]
+    # Separate best 2 features by cluster
+    for ind, cl in enumerate(cluster): 
+        axis_split[ind] = [ Kbest[i] for i in cl ]
+
+    for c in axis_split:
+        x_axis, y_axis = np.transpose(c)
+        plt.scatter( x_axis, y_axis )
 
     plt.savefig("graph5")
 
+
+
+
 quest4()
-# quest5()
+quest5()
