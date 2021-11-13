@@ -2,6 +2,9 @@
 import pandas as pd
 
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import matplotlib.lines as mlines
+
 import numpy as np
 
 from scipy.io import arff
@@ -72,7 +75,7 @@ def quest5():
     # Separate KBest by their output class
 
     def marker(i):
-        if Y_pred[i] == 0: return "."
+        if Y_pred[i] == 0: return "o"
         elif Y_pred[i] == 1: return "^"
         elif Y_pred[i] == 2: return "D"
         else: print("Bad classification")
@@ -86,7 +89,25 @@ def quest5():
         plt.scatter(point[0], point[1], alpha=0.2, marker=marker(i), color=color(i))
 
     cluster_centers = kmeans.cluster_centers_
+    
     print(cluster_centers)
+    
+
+
+    plt.title("K = 3 Clustering Solution based on top 2 features")
+    plt.xlabel("Cell_Size_Uniformity")
+    plt.ylabel("Cell_Shape_Uniformity")
+
+    green = mpatches.Patch(color='green', label='Malignant')
+    red = mpatches.Patch(color='red', label='Benign')
+
+    cl_1 = mlines.Line2D([], [], marker='D', color="black", linestyle='None', markersize=6, label='Cluster 1')
+    cl_2 = mlines.Line2D([], [], marker='o', color="black", linestyle='None', markersize=8, label='Cluster 2')
+    cl_3 = mlines.Line2D([], [], marker='^', color="black", linestyle='None', markersize=7, label='Cluster 3')
+
+    plt.legend(handles=[green, red, cl_1, cl_2, cl_3])
+    # plt.legend("hey", title="Clusters", loc=(10.5, 10.5))
+    # plt.legend("oh", title="CLass", loc=(10.05, 2))
 
     plt.savefig("graph5")
 
