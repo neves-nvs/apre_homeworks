@@ -23,11 +23,13 @@ X = D_breast.drop(columns=D_breast.columns[-1]).to_numpy().astype(int)
 # Results array binarized
 Y = D_breast[D_breast.columns[-1]].replace(b'benign', 0).replace(b'malignant', 1)
 
-def Cluster(k, Y_pred):
-    cluster = np.where(Y_pred == k) [0]
-    return cluster
+
 
 def quest4():
+
+    def Cluster(k, Y_pred):
+        cluster = np.where(Y_pred == k) [0]
+        return cluster
 
     def ECR(k, Y, Y_pred):
         soma = 0
@@ -58,37 +60,35 @@ def quest4():
         sil_score = silhouette_score(X, Y_pred, random_state=SEED)
         print(f"silhouette = {sil_score}")
 
-# def 
 
 def quest5():
-    kmeans = KMeans(n_clusters=3, random_state=SEED)
+    kmeans = KMeans(n_clusters=3, random_state=0)
     kmeans = kmeans.fit(X)
     Y_pred = kmeans.predict(X)
 
-    # Extract the cluster as separate arrays
-    cluster = list()
-    for i in range(3):
-        cluster.append(Cluster(i, Y_pred))
-    
     # Get elements with only their 2 most meaningful features
     Kbest = SelectKBest(mutual_info_classif, k=2)
-    Kbest =Kbest.fit_transform(X, Y)
+    Kbest = Kbest.fit_transform(X, Y)
+    # Separate KBest by their output class
 
+    def marker(i):
+        if Y_pred[i] == 0: return "."
+        elif Y_pred[i] == 1: return "^"
+        elif Y_pred[i] == 2: return "D"
+        else: print("Bad classification")
 
-    axis_split = [  [],
-                    [],
-                    []  ]
-    # Separate best 2 features by cluster
-    for ind, cl in enumerate(cluster): 
-        axis_split[ind] = [ Kbest[i] for i in cl ]
+    def color(i):
+        if Y[i] == 0: return "green"
+        elif Y[i] == 1: return "red"
+        else: print("Data missing")
+   
+    for i, point in enumerate(Kbest):
+        plt.scatter(point[0], point[1], alpha=0.2, marker=marker(i), color=color(i))
 
-    for c in axis_split:
-        x_axis, y_axis = np.transpose(c)
-        plt.scatter( x_axis, y_axis )
+    cluster_centers = kmeans.cluster_centers_
+    print(cluster_centers)
 
     plt.savefig("graph5")
-
-
 
 
 quest4()
